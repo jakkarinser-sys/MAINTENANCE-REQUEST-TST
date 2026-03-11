@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>แจ้งซ่อม REP_TST</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Sarabun', sans-serif; background: #f0f4f8; min-height: 100vh; }
+  .container { max-width: 480px; margin: 0 auto; padding: 16px; }
+  .card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 16px;
+          box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+  h2 { color: #00b900; font-size: 1.3rem; margin-bottom: 16px; display: flex;
+       align-items: center; gap: 8px; }
+  label { display: block; font-size: .85rem; color: #555; margin-bottom: 4px; }
+  input, select, textarea {
+    width: 100%; padding: 10px 12px; border: 1.5px solid #dde; border-radius: 10px;
+    font-size: .95rem; font-family: inherit; background: #fafafa; transition: border .2s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: #00b900; outline: none; background: #fff; }
+  .field { margin-bottom: 14px; }
+  .info-box { background: #e8f5e9; border-left: 4px solid #00b900; border-radius: 8px;
+              padding: 10px 14px; font-size: .88rem; color: #2e7d32; margin-top: 6px; }
+  .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 1rem;
+         font-weight: bold; cursor: pointer; transition: transform .1s, opacity .2s; }
+  .btn:active { transform: scale(.97); }
+  .btn-primary { background: #00b900; color: #fff; }
+  .btn-danger  { background: #e53935; color: #fff; }
+  .btn-grey    { background: #e0e0e0; color: #333; }
+  .toggle-group { display: flex; gap: 10px; }
+  .toggle-btn { flex: 1; padding: 12px; border: 2px solid #dde; border-radius: 10px;
+                background: #fafafa; font-size: .9rem; cursor: pointer; text-align: center;
+                transition: all .2s; }
+  .toggle-btn.active-yes { border-color: #e53935; background: #ffebee; color: #c62828; font-weight: bold; }
+  .toggle-btn.active-no  { border-color: #00b900; background: #e8f5e9; color: #1b5e20; font-weight: bold; }
+  .step-indicator { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #dde; transition: background .3s; }
+  .dot.active { background: #00b900; }
+  .success-box { text-align: center; padding: 30px 20px; }
+  .success-box .icon { font-size: 3rem; }
+  .rep-no { font-size: 1.4rem; font-weight: bold; color: #00b900; margin: 12px 0; }
+  #loading { position: fixed; inset: 0; background: rgba(255,255,255,.85);
+             display: flex; flex-direction: column; align-items: center;
+             justify-content: center; gap: 14px; z-index: 999; }
+  .spinner { width: 44px; height: 44px; border: 5px solid #eee;
+             border-top-color: #00b900; border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <div style="color:#555">กำลังโหลด...</div>
+</div>
+
+<div class="container hidden" id="app">
+
+  <!-- ── หน้าแจ้งซ่อม ── -->
+  <div id="page-repair">
+    <div class="step-indicator">
+      <div class="dot active" id="dot1"></div>
+      <div class="dot" id="dot2"></div>
+      <div class="dot" id="dot3"></div>
+    </div>
+
+    <!-- Step 1: ข้อมูลพนักงาน -->
+    <div id="step1" class="card">
+      <h2>📋 ข้อมูลผู้แจ้งซ่อม</h2>
+      <div class="field">
+        <label>รหัสพนักงาน</label>
+        <input type="text" id="empCode" placeholder="กรอกรหัสพนักงาน" />
+      </div>
+      <div id="empInfo" class="hidden"></div>
+      <div style="margin-top:16px">
+        <button class="btn btn-primary" onclick="fetchEmployee()">ถัดไป →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: รายละเอียดการแจ้งซ่อม -->
+    <div id="step2" class="card hidden">
+      <h2>🔧 รายละเอียดการแจ้งซ่อม</h2>
+
+      <div class="field">
+        <label>เลือกเครื่องที่แจ้งซ่อม</label>
+        <select id="machineSelect"><option value="">-- กรุณาเลือกเครื่อง --</option></select>
+      </div>
+
+      <div class="field">
+        <label>ประเภทงาน</label>
+        <select id="jobType">
+          <option value="">-- กรุณาเลือกประเภทงาน --</option>
+          <option value="ไฟฟ้า">⚡ ไฟฟ้า</option>
+          <option value="เครื่องกล">⚙️ เครื่องกล</option>
+          <option value="เครน">🏗️ เครน</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>รายละเอียดความเสียหาย</label>
+        <textarea id="detail" rows="4" placeholder="อธิบายอาการเสียหาย..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>สถานะเครื่อง</label>
+        <div class="toggle-group">
+          <div class="toggle-btn" id="btnStop" onclick="setMachineStop(true)">⛔ หยุดเครื่อง</div>
+          <div class="toggle-btn" id="btnRun"  onclick="setMachineStop(false)">✅ ยังทำงานอยู่</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn btn-grey" style="flex:0 0 80px" onclick="goStep(1)">← กลับ</button>
+        <button class="btn btn-primary" onclick="submitRepair()">📤 ส่งใบแจ้งซ่อม</button>
+      </div>
+    </div>
+
+    <!-- Step 3: สำเร็จ -->
+    <div id="step3" class="card hidden">
+      <div class="success-box">
+        <div class="icon">🎉</div>
+        <p style="color:#555;margin-top:8px">ส่งใบแจ้งซ่อมสำเร็จ!</p>
+        <div class="rep-no" id="repNoDisplay"></div>
+        <p style="font-size:.85rem;color:#777">ระบบได้แจ้งหัวหน้างานของท่านแล้ว<br>กรุณารอการอนุมัติครับ</p>
+        <button class="btn btn-grey" style="margin-top:20px" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div><!-- /page-repair -->
+
+  <!-- ── หน้าตรวจรับ ── -->
+  <div id="page-inspect" class="hidden">
+    <div class="card">
+      <h2>🔍 ตรวจรับการซ่อม</h2>
+      <div id="inspectDetail" class="info-box" style="margin-bottom:14px"></div>
+
+      <div class="field">
+        <label>ข้อเสนอแนะ (ถ้ามี)</label>
+        <textarea id="inspectNote" rows="3" placeholder="พิมพ์ข้อเสนอแนะ..."></textarea>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn btn-danger" onclick="submitInspect(false)">❌ ไม่ผ่าน</button>
+        <button class="btn btn-primary" onclick="submitInspect(true)">✅ ผ่าน</button>
+      </div>
+    </div>
+  </div><!-- /page-inspect -->
+
+</div><!-- /app -->
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────
+const GAS_URL   = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+const LIFF_ID   = "YOUR_LIFF_ID_FORM";
+
+// ── STATE ───────────────────────────────────────────────────
+let state = { emp: null, machineStop: null, userId: "", repNo: "" };
+
+// ── INIT ────────────────────────────────────────────────────
+window.addEventListener("load", async () => {
+  await liff.init({ liffId: LIFF_ID });
+  const params = new URLSearchParams(location.search);
+  state.userId = liff.getContext()?.userId || params.get("userId") || "";
+
+  // โหลดรายการเครื่อง
+  await loadMachines();
+
+  // ถ้าเป็นหน้าตรวจรับ
+  if (params.get("action") === "inspect") {
+    state.repNo = params.get("repNo");
+    showInspectPage();
+  }
+
+  document.getElementById("loading").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+});
+
+async function loadMachines() {
+  const res  = await fetch(`${GAS_URL}?action=getMachines`);
+  const list = await res.json();
+  const sel  = document.getElementById("machineSelect");
+  list.forEach(m => {
+    const opt = document.createElement("option");
+    opt.value = m.id; opt.textContent = m.name;
+    sel.appendChild(opt);
+  });
+}
+
+// ── STEP 1: ดึงข้อมูลพนักงาน ────────────────────────────────
+async function fetchEmployee() {
+  const code = document.getElementById("empCode").value.trim();
+  if (!code) return alert("กรุณากรอกรหัสพนักงาน");
+
+  showLoading(true);
+  const res = await fetch(`${GAS_URL}?action=getEmployee&code=${encodeURIComponent(code)}`);
+  const emp = await res.json();
+  showLoading(false);
+
+  if (emp.error) { alert(emp.error); return; }
+  state.emp = emp;
+
+  document.getElementById("empInfo").innerHTML = `
+    <div class="info-box">
+      <b>${emp.name}</b><br>
+      แผนก: ${emp.dept} | ฝ่าย: ${emp.div}<br>
+      ตำแหน่ง: ${emp.pos}
+    </div>`;
+  document.getElementById("empInfo").classList.remove("hidden");
+
+  setTimeout(() => goStep(2), 600);
+}
+
+// ── STEP NAV ─────────────────────────────────────────────────
+function goStep(n) {
+  [1, 2, 3].forEach(i => {
+    document.getElementById(`step${i}`).classList.toggle("hidden", i !== n);
+    document.getElementById(`dot${i}`)?.classList.toggle("active", i <= n);
+  });
+}
+
+// ── TOGGLE หยุดเครื่อง ────────────────────────────────────────
+function setMachineStop(val) {
+  state.machineStop = val;
+  document.getElementById("btnStop").className = "toggle-btn" + (val ? " active-yes" : "");
+  document.getElementById("btnRun").className  = "toggle-btn" + (!val ? " active-no"  : "");
+}
+
+// ── SUBMIT ใบแจ้งซ่อม ─────────────────────────────────────────
+async function submitRepair() {
+  const machSel = document.getElementById("machineSelect");
+  const jobType = document.getElementById("jobType").value;
+  const detail  = document.getElementById("detail").value.trim();
+
+  if (!machSel.value)     return alert("กรุณาเลือกเครื่อง");
+  if (!jobType)           return alert("กรุณาเลือกประเภทงาน");
+  if (!detail)            return alert("กรุณากรอกรายละเอียด");
+  if (state.machineStop === null) return alert("กรุณาระบุสถานะเครื่อง");
+
+  const payload = {
+    action:         "submitRepair",
+    empCode:        state.emp.code,
+    empName:        state.emp.name,
+    dept:           state.emp.dept,
+    div:            state.emp.div,
+    machineId:      machSel.value,
+    machineName:    machSel.options[machSel.selectedIndex].text,
+    jobType,
+    detail,
+    machineStop:    state.machineStop,
+    requesterLineId: state.userId,
+  };
+
+  showLoading(true);
+  const res  = await fetch(GAS_URL, { method: "POST", body: JSON.stringify(payload) });
+  const data = await res.json();
+  showLoading(false);
+
+  if (data.error) { alert("เกิดข้อผิดพลาด: " + data.error); return; }
+  document.getElementById("repNoDisplay").textContent = data.repNo;
+  goStep(3);
+}
+
+// ── หน้าตรวจรับ ───────────────────────────────────────────────
+async function showInspectPage() {
+  document.getElementById("page-repair").classList.add("hidden");
+  document.getElementById("page-inspect").classList.remove("hidden");
+
+  const res  = await fetch(`${GAS_URL}?action=getRepair&repNo=${state.repNo}`);
+  const data = await res.json();
+
+  document.getElementById("inspectDetail").innerHTML = `
+    <b>${state.repNo}</b><br>
+    ช่าง: ${data[14]} ${data[15]}<br>
+    สรุปการซ่อม: ${data[18]}<br>
+    อะไหล่ที่ใช้: ${formatParts(data[19])}
+  `;
+}
+
+function formatParts(json) {
+  try {
+    const parts = JSON.parse(json);
+    return parts.map(p => `${p.name} x${p.qty} ${p.unit}`).join(", ") || "-";
+  } catch { return json || "-"; }
+}
+
+async function submitInspect(pass) {
+  const note = document.getElementById("inspectNote").value.trim();
+  showLoading(true);
+  const res = await fetch(GAS_URL, {
+    method: "POST",
+    body: JSON.stringify({ action: "inspect", repNo: state.repNo, pass, note }),
+  });
+  const data = await res.json();
+  showLoading(false);
+
+  if (data.success) {
+    alert(pass ? "✅ บันทึกตรวจรับเรียบร้อย!" : "❌ บันทึก 'ไม่ผ่าน' เรียบร้อย กรุณาติดต่อหัวหน้าช่าง");
+    liff.closeWindow();
+  }
+}
+
+// ── UTIL ─────────────────────────────────────────────────────
+function showLoading(v) {
+  document.getElementById("loading").classList.toggle("hidden", !v);
+}
+</script>
+</body>
+</html>
