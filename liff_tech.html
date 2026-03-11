@@ -1,108 +1,137 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>ช่างซ่อม — REP_TST</title>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Sarabun', sans-serif; background: #f0f4f8; min-height: 100vh; }
-  .container { max-width: 480px; margin: 0 auto; padding: 16px; }
-  .card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 16px;
-          box-shadow: 0 2px 12px rgba(0,0,0,.08); }
-  h2 { color: #1565c0; font-size: 1.2rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-  label { display: block; font-size: .85rem; color: #555; margin-bottom: 4px; }
-  input, select, textarea {
-    width: 100%; padding: 10px 12px; border: 1.5px solid #dde; border-radius: 10px;
-    font-size: .95rem; font-family: inherit; background: #fafafa;
-  }
-  input:focus, select:focus, textarea:focus { border-color: #1565c0; outline: none; background: #fff; }
-  .field { margin-bottom: 14px; }
-  .info-box { background: #e3f2fd; border-left: 4px solid #1565c0; border-radius: 8px;
-              padding: 10px 14px; font-size: .88rem; color: #0d47a1; }
-  .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 1rem;
-         font-weight: bold; cursor: pointer; transition: transform .1s; }
-  .btn:active { transform: scale(.97); }
-  .btn-primary { background: #1565c0; color: #fff; }
-  .btn-success { background: #00b900; color: #fff; }
-  .btn-grey    { background: #e0e0e0; color: #333; }
-  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px;
-           font-size: .78rem; font-weight: bold; }
-  .badge-wait   { background: #fff3e0; color: #e65100; }
-  .badge-repair { background: #e3f2fd; color: #0d47a1; }
-  /* Parts table */
-  .parts-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
-  .parts-table th { background: #e3f2fd; padding: 8px; text-align: left; }
-  .parts-table td { padding: 8px; border-bottom: 1px solid #eee; }
-  .parts-table select, .parts-table input { padding: 6px 8px; font-size: .85rem; }
-  .add-part-btn { margin-top: 8px; padding: 8px 16px; border: 2px dashed #1565c0;
-                  border-radius: 8px; background: none; color: #1565c0;
-                  cursor: pointer; width: 100%; font-size: .9rem; }
-  .del-btn { background: #ffebee; border: none; border-radius: 6px; padding: 4px 8px;
-             color: #c62828; cursor: pointer; font-size: .8rem; }
-  .success-box { text-align: center; padding: 30px 20px; }
-  #loading { position: fixed; inset: 0; background: rgba(255,255,255,.85);
-             display: flex; flex-direction: column; align-items: center;
-             justify-content: center; gap: 14px; z-index: 999; }
-  .spinner { width: 44px; height: 44px; border: 5px solid #eee;
-             border-top-color: #1565c0; border-radius: 50%; animation: spin .8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .hidden { display: none !important; }
-  .step-bar { display: flex; margin-bottom: 16px; border-radius: 10px; overflow: hidden; }
-  .step-bar-item { flex: 1; padding: 10px; text-align: center; font-size: .8rem;
-                   background: #e0e0e0; color: #999; }
-  .step-bar-item.active { background: #1565c0; color: #fff; font-weight: bold; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif;background:#f0f4f8;min-height:100vh}
+.container{max-width:480px;margin:0 auto;padding:16px}
+.card{background:#fff;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+h2{color:#1565c0;font-size:1.2rem;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+label{display:block;font-size:.85rem;color:#555;margin-bottom:4px}
+input,textarea{width:100%;padding:10px 12px;border:1.5px solid #dde;border-radius:10px;font-size:.95rem;font-family:inherit;background:#fafafa}
+input:focus,textarea:focus{border-color:#1565c0;outline:none;background:#fff}
+.field{margin-bottom:14px}
+.info-box{background:#e3f2fd;border-left:4px solid #1565c0;border-radius:8px;padding:10px 14px;font-size:.88rem;color:#0d47a1}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;transition:transform .1s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:#1565c0;color:#fff}
+.btn-success{background:#00b900;color:#fff}
+.btn-grey{background:#e0e0e0;color:#333}
+.btn-outline{background:#fff;color:#1565c0;border:2px solid #1565c0;padding:10px}
+/* Tech list */
+.tech-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.tech-item{display:flex;align-items:center;justify-content:space-between;background:#e3f2fd;border-radius:10px;padding:10px 14px}
+.tech-item .name{font-size:.9rem;font-weight:bold;color:#0d47a1}
+.tech-item .dept{font-size:.78rem;color:#555}
+.del-tech{background:#ffebee;border:none;border-radius:6px;padding:4px 10px;color:#c62828;cursor:pointer;font-size:.8rem}
+.add-tech-row{display:flex;gap:8px;margin-bottom:8px}
+.add-tech-row input{flex:1}
+/* Parts */
+.parts-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.parts-table th{background:#e3f2fd;padding:8px;text-align:left}
+.parts-table td{padding:8px;border-bottom:1px solid #eee}
+.add-part-btn{margin-top:8px;padding:8px 16px;border:2px dashed #1565c0;border-radius:8px;background:none;color:#1565c0;cursor:pointer;width:100%;font-size:.9rem}
+.del-btn{background:#ffebee;border:none;border-radius:6px;padding:4px 8px;color:#c62828;cursor:pointer;font-size:.8rem}
+/* Photo */
+.photo-area{border:2px dashed #90caf9;border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:#f3f8ff}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.photo-thumb{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:.75rem;cursor:pointer}
+.upload-progress{font-size:.8rem;color:#1565c0;margin-top:6px}
+/* Step bar */
+.step-bar{display:flex;margin-bottom:16px;border-radius:10px;overflow:hidden}
+.step-bar-item{flex:1;padding:10px;text-align:center;font-size:.75rem;background:#e0e0e0;color:#999}
+.step-bar-item.active{background:#1565c0;color:#fff;font-weight:bold}
+#loading{position:fixed;inset:0;background:rgba(255,255,255,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999}
+.spinner{width:44px;height:44px;border:5px solid #eee;border-top-color:#1565c0;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hidden{display:none!important}
 </style>
 </head>
 <body>
-
 <div id="loading"><div class="spinner"></div><div style="color:#555">กำลังโหลด...</div></div>
 
 <div class="container hidden" id="app">
-
-  <!-- Step bar -->
   <div class="step-bar">
-    <div class="step-bar-item active" id="bar1">1. ยืนยันตัวตน</div>
-    <div class="step-bar-item" id="bar2">2. เริ่มซ่อม</div>
-    <div class="step-bar-item" id="bar3">3. บันทึกผล</div>
+    <div class="step-bar-item active" id="bar1">1. ใบงาน</div>
+    <div class="step-bar-item" id="bar2">2. ทีมช่าง</div>
+    <div class="step-bar-item" id="bar3">3. เริ่มซ่อม</div>
+    <div class="step-bar-item" id="bar4">4. บันทึกผล</div>
   </div>
 
-  <!-- ── Step 1: แสดงใบงาน + กรอกรหัสช่าง ── -->
+  <!-- Step 1: ดูใบงาน -->
   <div id="step1">
     <div class="card">
-      <h2>🔧 ใบงานซ่อม</h2>
+      <h2>🔧 รายละเอียดใบงาน</h2>
       <div id="jobSummary" class="info-box" style="margin-bottom:16px">กำลังโหลด...</div>
-
-      <div class="field">
-        <label>รหัสพนักงานช่าง</label>
-        <input type="text" id="techCode" placeholder="กรอกรหัสพนักงานของช่าง" />
-      </div>
-      <div id="techInfo" class="hidden" style="margin-bottom:14px"></div>
-      <button class="btn btn-primary" onclick="fetchTech()">ถัดไป →</button>
+      <button class="btn btn-primary" onclick="goBarStep(2)">ถัดไป → จัดทีมช่าง</button>
     </div>
   </div>
 
-  <!-- ── Step 2: ยืนยันเริ่มซ่อม ── -->
+  <!-- Step 2: หัวหน้าช่างเพิ่มรายชื่อช่าง -->
   <div id="step2" class="hidden">
     <div class="card">
-      <h2>▶️ เริ่มซ่อม</h2>
-      <div id="techConfirmInfo" class="info-box" style="margin-bottom:16px"></div>
-      <div style="display:flex;gap:10px">
+      <h2>👷 จัดทีมช่าง</h2>
+      <p style="font-size:.85rem;color:#555;margin-bottom:14px">หัวหน้าทีมค้นหาและเพิ่มรายชื่อช่างที่เข้าซ่อมครับ</p>
+
+      <div class="add-tech-row">
+        <input type="text" id="searchCode" placeholder="กรอกรหัสพนักงานช่าง"/>
+        <button class="btn-outline" style="border-radius:10px;white-space:nowrap;padding:0 14px" onclick="searchTech()">+ เพิ่ม</button>
+      </div>
+      <div id="searchResult" class="hidden" style="margin-bottom:10px"></div>
+
+      <div class="tech-list" id="techList"></div>
+      <p id="techEmpty" style="font-size:.85rem;color:#aaa;text-align:center;padding:10px">ยังไม่มีช่างในทีม</p>
+
+      <div style="display:flex;gap:10px;margin-top:16px">
         <button class="btn btn-grey" style="flex:0 0 80px" onclick="goBarStep(1)">← กลับ</button>
+        <button class="btn btn-primary" onclick="confirmTeam()">ยืนยันทีม →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: ถ่ายรูปก่อนซ่อม + เริ่มซ่อม -->
+  <div id="step3" class="hidden">
+    <div class="card">
+      <h2>▶️ เริ่มซ่อม</h2>
+
+      <!-- สรุปทีมช่าง -->
+      <div class="info-box" style="margin-bottom:14px">
+        <b>ทีมช่าง:</b><br>
+        <span id="teamSummary"></span>
+      </div>
+
+      <div class="field">
+        <label>📷 ถ่ายรูปก่อนซ่อม (เพิ่มได้หลายรูป)</label>
+        <div class="photo-area" onclick="document.getElementById('beforeInput').click()">
+          <div style="font-size:2rem">📷</div>
+          <div style="font-size:.85rem;color:#777;margin-top:4px">แตะเพื่อถ่ายรูป</div>
+        </div>
+        <input type="file" id="beforeInput" accept="image/*" multiple capture="environment" class="hidden" onchange="addPhotos(this,'before')"/>
+        <div class="photo-grid" id="beforeGrid"></div>
+        <div class="upload-progress" id="beforeProgress"></div>
+      </div>
+
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-grey" style="flex:0 0 80px" onclick="goBarStep(2)">← กลับ</button>
         <button class="btn btn-success" onclick="startRepair()">⚒️ เริ่มทำงาน</button>
       </div>
     </div>
   </div>
 
-  <!-- ── Step 3: บันทึกผลการซ่อม ── -->
-  <div id="step3" class="hidden">
+  <!-- Step 4: บันทึกผลการซ่อม -->
+  <div id="step4" class="hidden">
     <div class="card">
       <h2>📝 บันทึกผลการซ่อม</h2>
 
       <div class="field">
         <label>สรุปรายละเอียดการซ่อม</label>
-        <textarea id="repairDetail" rows="4" placeholder="อธิบายสิ่งที่ได้ดำเนินการ..."></textarea>
+        <textarea id="repairDetail" rows="4" placeholder="อธิบายสิ่งที่ดำเนินการ..."></textarea>
       </div>
 
       <div class="field">
@@ -115,204 +144,244 @@
       </div>
 
       <div class="field">
-        <label>ข้อเสนอแนะจากช่าง (ถ้ามี)</label>
-        <textarea id="techNote" rows="3" placeholder="เช่น ควรเปลี่ยนอะไหล่ถาวร, ควรบำรุงรักษาเพิ่มเติม..."></textarea>
+        <label>📷 ถ่ายรูปหลังซ่อมเสร็จ (เพิ่มได้หลายรูป)</label>
+        <div class="photo-area" onclick="document.getElementById('afterInput').click()">
+          <div style="font-size:2rem">📷</div>
+          <div style="font-size:.85rem;color:#777;margin-top:4px">แตะเพื่อถ่ายรูป</div>
+        </div>
+        <input type="file" id="afterInput" accept="image/*" multiple capture="environment" class="hidden" onchange="addPhotos(this,'after')"/>
+        <div class="photo-grid" id="afterGrid"></div>
+        <div class="upload-progress" id="afterProgress"></div>
+      </div>
+
+      <div class="field">
+        <label>ข้อเสนอแนะจากทีมช่าง (ถ้ามี)</label>
+        <textarea id="techNote" rows="3" placeholder="เช่น ควรเปลี่ยนอะไหล่ถาวร..."></textarea>
       </div>
 
       <button class="btn btn-success" onclick="finishRepair()">✅ ซ่อมเสร็จ / ส่งตรวจรับ</button>
     </div>
   </div>
 
-  <!-- ── Done ── -->
+  <!-- Done -->
   <div id="stepDone" class="hidden">
-    <div class="card">
-      <div class="success-box">
-        <div style="font-size:3rem">✅</div>
-        <p style="margin-top:8px;font-weight:bold;color:#00b900">บันทึกสำเร็จ!</p>
-        <p style="font-size:.85rem;color:#777;margin-top:8px">ระบบได้แจ้งผู้แจ้งซ่อม<br>ให้ตรวจรับการซ่อมแล้วครับ</p>
-        <button class="btn btn-grey" style="margin-top:20px" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
-      </div>
+    <div class="card" style="text-align:center;padding:30px 20px">
+      <div style="font-size:3rem">✅</div>
+      <p style="margin-top:8px;font-weight:bold;color:#00b900">บันทึกสำเร็จ!</p>
+      <p style="font-size:.85rem;color:#777;margin-top:8px">ระบบแจ้งผู้แจ้งซ่อมให้ตรวจรับแล้วครับ</p>
+      <button class="btn btn-grey" style="margin-top:20px" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
     </div>
   </div>
-
 </div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────
-const GAS_URL = "https://script.google.com/macros/s/AKfycbw79BRtdw3HxJewTUUHn0VFWhRoP8TDl_50D9fYRDYs_Z14P4pNBXKG4BWyChrRI3cyNQ/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbx7TcrL3CLeqkVRkR1z-kuRtTUHT0hPMxiC946WimFteQruRBqNVZ69ERrR0PJp5p3Xqg/exec";
 const LIFF_ID = "2009412708-aE6M85sA";
 
-let state = { repNo: "", tech: null, partsList: [] };
+let state  = { repNo:"" };
+let techs  = [];   // [{ code, name, dept }]
+let photos = { before:[], after:[] };
 
-// ── INIT ────────────────────────────────────────────────────
 window.addEventListener("load", async () => {
   await liff.init({ liffId: LIFF_ID });
-  const params = new URLSearchParams(location.search);
-  state.repNo  = params.get("repNo") || "";
-
-  await Promise.all([loadJobSummary(), loadPartsOptions()]);
-
+  state.repNo = new URLSearchParams(location.search).get("repNo") || "";
+  await loadJobSummary();
   document.getElementById("loading").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
 });
 
 async function loadJobSummary() {
-  if (!state.repNo) {
-    document.getElementById("jobSummary").textContent = "ไม่พบเลขที่ใบแจ้งซ่อม";
-    return;
-  }
+  if (!state.repNo) { document.getElementById("jobSummary").textContent="ไม่พบเลขที่ใบแจ้งซ่อม"; return; }
   const res  = await fetch(`${GAS_URL}?action=getRepair&repNo=${state.repNo}`);
-  const data = await res.json();
-  document.getElementById("jobSummary").innerHTML = `
-    <b>${state.repNo}</b>
-    <span class="badge badge-wait" style="margin-left:6px">${data[12]}</span><br>
-    เครื่อง: ${data[7]}<br>
-    ประเภท: ${data[8]}<br>
-    รายละเอียด: ${data[9]}<br>
-    สถานะเครื่อง: ${data[10] === "true" || data[10] === true ? "⛔ หยุดเครื่อง" : "✅ ยังทำงานอยู่"}<br>
-    แจ้งโดย: ${data[3]} (${data[4]})
-  `;
+  const d    = await res.json();
+  document.getElementById("jobSummary").innerHTML =
+    `<b>${state.repNo}</b><br>⚙️ เครื่อง: ${d[7]}<br>🔧 ประเภท: ${d[8]}<br>📋 รายละเอียด: ${d[9]}<br>🚦 สถานะ: ${d[10]==="true"||d[10]===true?"⛔ หยุดเครื่อง":"✅ ทำงานอยู่"}<br>👤 แจ้งโดย: ${d[3]} (${d[4]})`;
 }
 
-async function loadPartsOptions() {
-  const res  = await fetch(`${GAS_URL}?action=getParts`);
-  state.partsList = await res.json();
-}
-
-// ── STEP 1: ยืนยันตัวตนช่าง ─────────────────────────────────
-async function fetchTech() {
-  const code = document.getElementById("techCode").value.trim();
+// ── ค้นหาช่างจากรหัส ─────────────────────────────────────────
+async function searchTech() {
+  const code = document.getElementById("searchCode").value.trim();
   if (!code) return alert("กรุณากรอกรหัสพนักงาน");
+  if (techs.find(t => t.code === code)) return alert("เพิ่มช่างคนนี้แล้วครับ");
 
   showLoading(true);
-  const res  = await fetch(`${GAS_URL}?action=getEmployee&code=${encodeURIComponent(code)}`);
-  const emp  = await res.json();
+  const res = await fetch(`${GAS_URL}?action=getEmployee&code=${encodeURIComponent(code)}`);
+  const emp = await res.json();
   showLoading(false);
 
   if (emp.error) { alert(emp.error); return; }
-  state.tech = emp;
 
-  document.getElementById("techInfo").innerHTML = `
-    <div class="info-box">
-      <b>${emp.name}</b><br>แผนก: ${emp.dept} | ตำแหน่ง: ${emp.pos}
+  // แสดง preview ก่อนเพิ่ม
+  const box = document.getElementById("searchResult");
+  box.innerHTML = `
+    <div class="info-box" style="display:flex;justify-content:space-between;align-items:center">
+      <div><b>${emp.name}</b><br><span style="font-size:.8rem">${emp.dept} | ${emp.pos}</span></div>
+      <button class="btn-outline" style="border-radius:8px;padding:6px 14px;white-space:nowrap"
+        onclick="addTech('${emp.code}','${emp.name}','${emp.dept}')">เพิ่ม</button>
     </div>`;
-  document.getElementById("techInfo").classList.remove("hidden");
-
-  document.getElementById("techConfirmInfo").innerHTML = `
-    ช่าง: <b>${emp.name}</b><br>
-    ใบงาน: <b>${state.repNo}</b><br>
-    <br>กดปุ่ม "เริ่มทำงาน" เพื่อบันทึกเวลาเริ่มซ่อมครับ
-  `;
-
-  setTimeout(() => goBarStep(2), 500);
+  box.classList.remove("hidden");
+  document.getElementById("searchCode").value = "";
 }
 
-// ── STEP 2: บันทึกเวลาเริ่มซ่อม ─────────────────────────────
+function addTech(code, name, dept) {
+  if (techs.find(t => t.code === code)) return;
+  techs.push({ code, name, dept });
+  document.getElementById("searchResult").classList.add("hidden");
+  renderTechList();
+}
+
+function removeTech(code) {
+  techs = techs.filter(t => t.code !== code);
+  renderTechList();
+}
+
+function renderTechList() {
+  const list  = document.getElementById("techList");
+  const empty = document.getElementById("techEmpty");
+  list.innerHTML = "";
+  empty.classList.toggle("hidden", techs.length > 0);
+  techs.forEach(t => {
+    const div = document.createElement("div");
+    div.className = "tech-item";
+    div.innerHTML = `
+      <div><div class="name">👷 ${t.name}</div><div class="dept">${t.dept}</div></div>
+      <button class="del-tech" onclick="removeTech('${t.code}')">ลบ</button>`;
+    list.appendChild(div);
+  });
+  // อัปเดต team summary ใน step 3
+  document.getElementById("teamSummary").innerHTML =
+    techs.map(t => `👷 ${t.name} (${t.dept})`).join("<br>");
+}
+
+async function confirmTeam() {
+  if (!techs.length) return alert("กรุณาเพิ่มช่างอย่างน้อย 1 คนครับ");
+  showLoading(true);
+  await fetch(GAS_URL, {
+    method:"POST",
+    body: JSON.stringify({ action:"updateTechs", repNo:state.repNo, techs }),
+  });
+  showLoading(false);
+  goBarStep(3);
+}
+
+// ── เริ่มซ่อม ─────────────────────────────────────────────────
 async function startRepair() {
   showLoading(true);
-  const res = await fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action:   "startRepair",
-      repNo:    state.repNo,
-      techCode: state.tech.code,
-      techName: state.tech.name,
-    }),
+  await uploadPhotos("before", state.repNo);
+  await fetch(GAS_URL, {
+    method:"POST",
+    body: JSON.stringify({ action:"startRepair", repNo:state.repNo }),
   });
-  const data = await res.json();
   showLoading(false);
-  if (data.error) { alert("เกิดข้อผิดพลาด: " + data.error); return; }
-  goBarStep(3);
-  addPartRow(); // เพิ่มแถวอะไหล่แรกให้อัตโนมัติ
+  goBarStep(4);
+  addPartRow();
 }
 
-// ── Parts rows ───────────────────────────────────────────────
+// ── Photo ────────────────────────────────────────────────────
+function addPhotos(input, stage) {
+  const grid = document.getElementById(stage+"Grid");
+  Array.from(input.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const b64 = e.target.result.split(",")[1];
+      const idx = photos[stage].length;
+      photos[stage].push({ base64:b64, name:file.name });
+      const thumb = document.createElement("div");
+      thumb.className = "photo-thumb";
+      thumb.id = `thumb-${stage}-${idx}`;
+      thumb.innerHTML = `<img src="${e.target.result}"/>
+        <button class="photo-del" onclick="removePhoto('${stage}',${idx})">✕</button>`;
+      grid.appendChild(thumb);
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = "";
+}
+
+function removePhoto(stage, idx) {
+  photos[stage][idx] = null;
+  document.getElementById(`thumb-${stage}-${idx}`)?.remove();
+}
+
+async function uploadPhotos(stage, repNo) {
+  const prog  = document.getElementById(stage+"Progress");
+  const valid = photos[stage].filter(Boolean);
+  if (!valid.length) return [];
+  prog.textContent = `กำลัง upload 0/${valid.length} รูป...`;
+  const urls = [];
+  for (let i = 0; i < valid.length; i++) {
+    const res = await fetch(GAS_URL, {
+      method:"POST",
+      body: JSON.stringify({
+        action:"uploadImage", repNo, stage,
+        base64:valid[i].base64, filename:`${repNo}_${stage}_${Date.now()}_${i}.jpg`,
+      }),
+    });
+    const d = await res.json();
+    if (d.url) urls.push(d.url);
+    prog.textContent = `กำลัง upload ${i+1}/${valid.length} รูป...`;
+  }
+  prog.textContent = `✅ upload ${urls.length} รูปเรียบร้อย`;
+  return urls;
+}
+
+// ── Parts ─────────────────────────────────────────────────────
 let partRowId = 0;
 function addPartRow() {
   const tbody = document.getElementById("partsBody");
   const id    = ++partRowId;
-  const opts  = state.partsList.map(p =>
-    `<option value="${p.id}" data-unit="${p.unit}">${p.name}</option>`
-  ).join("");
-
-  const tr = document.createElement("tr");
-  tr.id    = `pr${id}`;
+  const tr    = document.createElement("tr");
+  tr.id = `pr${id}`;
   tr.innerHTML = `
-    <td>
-      <select onchange="syncUnit(${id}, this)" style="min-width:120px">
-        <option value="">-- เลือก --</option>
-        ${opts}
-      </select>
-    </td>
-    <td><input type="number" id="qty${id}" min="1" value="1" style="width:70px" /></td>
-    <td><input type="text"   id="unit${id}" placeholder="หน่วย" style="width:60px" /></td>
-    <td><button class="del-btn" onclick="delPartRow(${id})">ลบ</button></td>
-  `;
+    <td><input type="text"   id="pname${id}" placeholder="ชื่ออะไหล่" style="min-width:110px"/></td>
+    <td><input type="number" id="qty${id}"   min="1" value="1" style="width:60px"/></td>
+    <td><input type="text"   id="unit${id}"  placeholder="หน่วย" style="width:55px"/></td>
+    <td><button class="del-btn" onclick="delPartRow(${id})">ลบ</button></td>`;
   tbody.appendChild(tr);
 }
-
-function syncUnit(id, sel) {
-  const opt  = sel.options[sel.selectedIndex];
-  document.getElementById(`unit${id}`).value = opt.dataset.unit || "";
+function delPartRow(id){ document.getElementById(`pr${id}`)?.remove(); }
+function collectParts(){
+  return Array.from(document.querySelectorAll("#partsBody tr")).map(tr => {
+    const inputs = tr.querySelectorAll("input");
+    const name   = inputs[0]?.value.trim();
+    if (!name) return null;
+    return { name, qty: inputs[1]?.value||1, unit: inputs[2]?.value.trim()||"" };
+  }).filter(Boolean);
 }
 
-function delPartRow(id) {
-  document.getElementById(`pr${id}`)?.remove();
-}
-
-function collectParts() {
-  const rows = document.querySelectorAll("#partsBody tr");
-  const parts = [];
-  rows.forEach(tr => {
-    const sel  = tr.querySelector("select");
-    const qty  = tr.querySelector("input[type=number]");
-    const unit = tr.querySelector("input[type=text]");
-    if (sel?.value) {
-      const opt = sel.options[sel.selectedIndex];
-      parts.push({ id: sel.value, name: opt.textContent, qty: qty?.value || 1, unit: unit?.value || "" });
-    }
-  });
-  return parts;
-}
-
-// ── STEP 3: บันทึกซ่อมเสร็จ ──────────────────────────────────
+// ── ซ่อมเสร็จ ─────────────────────────────────────────────────
 async function finishRepair() {
   const detail = document.getElementById("repairDetail").value.trim();
   if (!detail) return alert("กรุณากรอกสรุปรายละเอียดการซ่อม");
-
   showLoading(true);
+  await uploadPhotos("after", state.repNo);
   const res = await fetch(GAS_URL, {
-    method: "POST",
+    method:"POST",
     body: JSON.stringify({
-      action:       "finishRepair",
-      repNo:        state.repNo,
-      repairDetail: detail,
-      partsUsed:    collectParts(),
-      techNote:     document.getElementById("techNote").value.trim(),
+      action:"finishRepair", repNo:state.repNo,
+      repairDetail:detail, partsUsed:collectParts(),
+      techNote:document.getElementById("techNote").value.trim(),
+      techs,
     }),
   });
   const data = await res.json();
   showLoading(false);
-
-  if (data.error) { alert("เกิดข้อผิดพลาด: " + data.error); return; }
+  if (data.error) { alert("เกิดข้อผิดพลาด: "+data.error); return; }
   goBarStep("done");
 }
 
-// ── NAV ───────────────────────────────────────────────────────
+// ── Nav ───────────────────────────────────────────────────────
 function goBarStep(n) {
-  ["step1","step2","step3","stepDone"].forEach(id =>
+  ["step1","step2","step3","step4","stepDone"].forEach(id =>
     document.getElementById(id).classList.add("hidden")
   );
   if (n === "done") { document.getElementById("stepDone").classList.remove("hidden"); return; }
   document.getElementById(`step${n}`).classList.remove("hidden");
-  [1,2,3].forEach(i =>
+  [1,2,3,4].forEach(i =>
     document.getElementById(`bar${i}`).classList.toggle("active", i <= n)
   );
 }
-
-function showLoading(v) {
-  document.getElementById("loading").classList.toggle("hidden", !v);
-}
+function showLoading(v){ document.getElementById("loading").classList.toggle("hidden",!v); }
 </script>
 </body>
 </html>
