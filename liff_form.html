@@ -1,64 +1,54 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>แจ้งซ่อม REP_TST</title>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Sarabun', sans-serif; background: #f0f4f8; min-height: 100vh; }
-  .container { max-width: 480px; margin: 0 auto; padding: 16px; }
-  .card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 16px;
-          box-shadow: 0 2px 12px rgba(0,0,0,.08); }
-  h2 { color: #00b900; font-size: 1.3rem; margin-bottom: 16px; display: flex;
-       align-items: center; gap: 8px; }
-  label { display: block; font-size: .85rem; color: #555; margin-bottom: 4px; }
-  input, select, textarea {
-    width: 100%; padding: 10px 12px; border: 1.5px solid #dde; border-radius: 10px;
-    font-size: .95rem; font-family: inherit; background: #fafafa; transition: border .2s;
-  }
-  input:focus, select:focus, textarea:focus { border-color: #00b900; outline: none; background: #fff; }
-  .field { margin-bottom: 14px; }
-  .info-box { background: #e8f5e9; border-left: 4px solid #00b900; border-radius: 8px;
-              padding: 10px 14px; font-size: .88rem; color: #2e7d32; margin-top: 6px; }
-  .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 1rem;
-         font-weight: bold; cursor: pointer; transition: transform .1s, opacity .2s; }
-  .btn:active { transform: scale(.97); }
-  .btn-primary { background: #00b900; color: #fff; }
-  .btn-danger  { background: #e53935; color: #fff; }
-  .btn-grey    { background: #e0e0e0; color: #333; }
-  .toggle-group { display: flex; gap: 10px; }
-  .toggle-btn { flex: 1; padding: 12px; border: 2px solid #dde; border-radius: 10px;
-                background: #fafafa; font-size: .9rem; cursor: pointer; text-align: center;
-                transition: all .2s; }
-  .toggle-btn.active-yes { border-color: #e53935; background: #ffebee; color: #c62828; font-weight: bold; }
-  .toggle-btn.active-no  { border-color: #00b900; background: #e8f5e9; color: #1b5e20; font-weight: bold; }
-  .step-indicator { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
-  .dot { width: 10px; height: 10px; border-radius: 50%; background: #dde; transition: background .3s; }
-  .dot.active { background: #00b900; }
-  .success-box { text-align: center; padding: 30px 20px; }
-  .success-box .icon { font-size: 3rem; }
-  .rep-no { font-size: 1.4rem; font-weight: bold; color: #00b900; margin: 12px 0; }
-  #loading { position: fixed; inset: 0; background: rgba(255,255,255,.85);
-             display: flex; flex-direction: column; align-items: center;
-             justify-content: center; gap: 14px; z-index: 999; }
-  .spinner { width: 44px; height: 44px; border: 5px solid #eee;
-             border-top-color: #00b900; border-radius: 50%; animation: spin .8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .hidden { display: none !important; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif;background:#f0f4f8;min-height:100vh}
+.container{max-width:480px;margin:0 auto;padding:16px}
+.card{background:#fff;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+h2{color:#00b900;font-size:1.2rem;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+label{display:block;font-size:.85rem;color:#555;margin-bottom:4px}
+input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid #dde;border-radius:10px;font-size:.95rem;font-family:inherit;background:#fafafa;transition:border .2s}
+input:focus,select:focus,textarea:focus{border-color:#00b900;outline:none;background:#fff}
+.field{margin-bottom:14px}
+.info-box{background:#e8f5e9;border-left:4px solid #00b900;border-radius:8px;padding:10px 14px;font-size:.88rem;color:#2e7d32;margin-top:6px}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;transition:transform .1s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:#00b900;color:#fff}
+.btn-danger{background:#e53935;color:#fff}
+.btn-grey{background:#e0e0e0;color:#333}
+.toggle-group{display:flex;gap:10px}
+.toggle-btn{flex:1;padding:12px;border:2px solid #dde;border-radius:10px;background:#fafafa;font-size:.9rem;cursor:pointer;text-align:center;transition:all .2s}
+.toggle-btn.active-yes{border-color:#e53935;background:#ffebee;color:#c62828;font-weight:bold}
+.toggle-btn.active-no{border-color:#00b900;background:#e8f5e9;color:#1b5e20;font-weight:bold}
+.step-indicator{display:flex;justify-content:center;gap:8px;margin-bottom:20px}
+.dot{width:10px;height:10px;border-radius:50%;background:#dde;transition:background .3s}
+.dot.active{background:#00b900}
+/* Photo upload */
+.photo-area{border:2px dashed #b2dfdb;border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:#f9fffe;transition:border .2s}
+.photo-area:hover{border-color:#00b900}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.photo-thumb{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.upload-progress{font-size:.8rem;color:#00b900;margin-top:6px}
+.success-box{text-align:center;padding:30px 20px}
+.rep-no{font-size:1.4rem;font-weight:bold;color:#00b900;margin:12px 0}
+#loading{position:fixed;inset:0;background:rgba(255,255,255,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999}
+.spinner{width:44px;height:44px;border:5px solid #eee;border-top-color:#00b900;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hidden{display:none!important}
 </style>
 </head>
 <body>
-
-<div id="loading">
-  <div class="spinner"></div>
-  <div style="color:#555">กำลังโหลด...</div>
-</div>
+<div id="loading"><div class="spinner"></div><div style="color:#555">กำลังโหลด...</div></div>
 
 <div class="container hidden" id="app">
 
-  <!-- ── หน้าแจ้งซ่อม ── -->
   <div id="page-repair">
     <div class="step-indicator">
       <div class="dot active" id="dot1"></div>
@@ -66,12 +56,12 @@
       <div class="dot" id="dot3"></div>
     </div>
 
-    <!-- Step 1: ข้อมูลพนักงาน -->
+    <!-- Step 1 -->
     <div id="step1" class="card">
       <h2>📋 ข้อมูลผู้แจ้งซ่อม</h2>
       <div class="field">
         <label>รหัสพนักงาน</label>
-        <input type="text" id="empCode" placeholder="กรอกรหัสพนักงาน" />
+        <input type="text" id="empCode" placeholder="กรอกรหัสพนักงาน"/>
       </div>
       <div id="empInfo" class="hidden"></div>
       <div style="margin-top:16px">
@@ -79,7 +69,7 @@
       </div>
     </div>
 
-    <!-- Step 2: รายละเอียดการแจ้งซ่อม -->
+    <!-- Step 2 -->
     <div id="step2" class="card hidden">
       <h2>🔧 รายละเอียดการแจ้งซ่อม</h2>
 
@@ -87,22 +77,19 @@
         <label>เลือกเครื่องที่แจ้งซ่อม</label>
         <select id="machineSelect"><option value="">-- กรุณาเลือกเครื่อง --</option></select>
       </div>
-
       <div class="field">
         <label>ประเภทงาน</label>
         <select id="jobType">
-          <option value="">-- กรุณาเลือกประเภทงาน --</option>
+          <option value="">-- กรุณาเลือก --</option>
           <option value="ไฟฟ้า">⚡ ไฟฟ้า</option>
           <option value="เครื่องกล">⚙️ เครื่องกล</option>
           <option value="เครน">🏗️ เครน</option>
         </select>
       </div>
-
       <div class="field">
         <label>รายละเอียดความเสียหาย</label>
         <textarea id="detail" rows="4" placeholder="อธิบายอาการเสียหาย..."></textarea>
       </div>
-
       <div class="field">
         <label>สถานะเครื่อง</label>
         <div class="toggle-group">
@@ -111,67 +98,83 @@
         </div>
       </div>
 
+      <!-- ถ่ายรูปจุดเสีย -->
+      <div class="field">
+        <label>📷 ถ่ายรูปจุดเสีย (เพิ่มได้หลายรูป)</label>
+        <div class="photo-area" onclick="document.getElementById('repairInput').click()">
+          <div style="font-size:2rem">📷</div>
+          <div style="font-size:.85rem;color:#777;margin-top:4px">แตะเพื่อถ่ายรูปหรือเลือกจากคลัง</div>
+        </div>
+        <input type="file" id="repairInput" accept="image/*" multiple capture="environment" class="hidden" onchange="addPhotos(this,'repair')"/>
+        <div class="photo-grid" id="repairGrid"></div>
+        <div class="upload-progress" id="repairProgress"></div>
+      </div>
+
       <div style="display:flex;gap:10px;margin-top:16px">
         <button class="btn btn-grey" style="flex:0 0 80px" onclick="goStep(1)">← กลับ</button>
         <button class="btn btn-primary" onclick="submitRepair()">📤 ส่งใบแจ้งซ่อม</button>
       </div>
     </div>
 
-    <!-- Step 3: สำเร็จ -->
+    <!-- Step 3 -->
     <div id="step3" class="card hidden">
       <div class="success-box">
-        <div class="icon">🎉</div>
+        <div style="font-size:3rem">🎉</div>
         <p style="color:#555;margin-top:8px">ส่งใบแจ้งซ่อมสำเร็จ!</p>
         <div class="rep-no" id="repNoDisplay"></div>
         <p style="font-size:.85rem;color:#777">ระบบได้แจ้งหัวหน้างานของท่านแล้ว<br>กรุณารอการอนุมัติครับ</p>
         <button class="btn btn-grey" style="margin-top:20px" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
       </div>
     </div>
-  </div><!-- /page-repair -->
+  </div>
 
-  <!-- ── หน้าตรวจรับ ── -->
+  <!-- หน้าตรวจรับ -->
   <div id="page-inspect" class="hidden">
     <div class="card">
       <h2>🔍 ตรวจรับการซ่อม</h2>
       <div id="inspectDetail" class="info-box" style="margin-bottom:14px"></div>
 
+      <!-- ถ่ายรูปตรวจรับ -->
+      <div class="field">
+        <label>📷 ถ่ายรูปหลังตรวจรับ (เพิ่มได้หลายรูป)</label>
+        <div class="photo-area" onclick="document.getElementById('inspectInput').click()">
+          <div style="font-size:2rem">📷</div>
+          <div style="font-size:.85rem;color:#777;margin-top:4px">แตะเพื่อถ่ายรูปหรือเลือกจากคลัง</div>
+        </div>
+        <input type="file" id="inspectInput" accept="image/*" multiple capture="environment" class="hidden" onchange="addPhotos(this,'inspect')"/>
+        <div class="photo-grid" id="inspectGrid"></div>
+        <div class="upload-progress" id="inspectProgress"></div>
+      </div>
+
       <div class="field">
         <label>ข้อเสนอแนะ (ถ้ามี)</label>
         <textarea id="inspectNote" rows="3" placeholder="พิมพ์ข้อเสนอแนะ..."></textarea>
       </div>
-
       <div style="display:flex;gap:10px;margin-top:16px">
         <button class="btn btn-danger" onclick="submitInspect(false)">❌ ไม่ผ่าน</button>
         <button class="btn btn-primary" onclick="submitInspect(true)">✅ ผ่าน</button>
       </div>
     </div>
-  </div><!-- /page-inspect -->
+  </div>
 
-</div><!-- /app -->
+</div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────
-const GAS_URL   = "https://script.google.com/macros/s/AKfycbw79BRtdw3HxJewTUUHn0VFWhRoP8TDl_50D9fYRDYs_Z14P4pNBXKG4BWyChrRI3cyNQ/exec";
-const LIFF_ID   = "2009412029-oo37Q1jc";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbx7TcrL3CLeqkVRkR1z-kuRtTUHT0hPMxiC946WimFteQruRBqNVZ69ERrR0PJp5p3Xqg/exec";
+const LIFF_ID = "2009412029-oo37Q1jc";
 
-// ── STATE ───────────────────────────────────────────────────
-let state = { emp: null, machineStop: null, userId: "", repNo: "" };
+let state = { emp:null, machineStop:null, userId:"", repNo:"" };
+let photos = { repair:[], inspect:[] }; // เก็บ base64
 
-// ── INIT ────────────────────────────────────────────────────
 window.addEventListener("load", async () => {
   await liff.init({ liffId: LIFF_ID });
-  const params = new URLSearchParams(location.search);
-  state.userId = liff.getContext()?.userId || params.get("userId") || "";
-
-  // โหลดรายการเครื่อง
+  const p = new URLSearchParams(location.search);
+  state.userId = liff.getContext()?.userId || p.get("userId") || "";
   await loadMachines();
-
-  // ถ้าเป็นหน้าตรวจรับ
-  if (params.get("action") === "inspect") {
-    state.repNo = params.get("repNo");
+  if (p.get("action") === "inspect") {
+    state.repNo = p.get("repNo");
     showInspectPage();
   }
-
   document.getElementById("loading").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
 });
@@ -181,129 +184,149 @@ async function loadMachines() {
   const list = await res.json();
   const sel  = document.getElementById("machineSelect");
   list.forEach(m => {
-    const opt = document.createElement("option");
-    opt.value = m.id; opt.textContent = m.name;
-    sel.appendChild(opt);
+    const o = document.createElement("option");
+    o.value = m.id; o.textContent = m.name; sel.appendChild(o);
   });
 }
 
-// ── STEP 1: ดึงข้อมูลพนักงาน ────────────────────────────────
 async function fetchEmployee() {
   const code = document.getElementById("empCode").value.trim();
   if (!code) return alert("กรุณากรอกรหัสพนักงาน");
-
   showLoading(true);
   const res = await fetch(`${GAS_URL}?action=getEmployee&code=${encodeURIComponent(code)}`);
   const emp = await res.json();
   showLoading(false);
-
   if (emp.error) { alert(emp.error); return; }
   state.emp = emp;
-
-  document.getElementById("empInfo").innerHTML = `
-    <div class="info-box">
-      <b>${emp.name}</b><br>
-      แผนก: ${emp.dept} | ฝ่าย: ${emp.div}<br>
-      ตำแหน่ง: ${emp.pos}
-    </div>`;
+  document.getElementById("empInfo").innerHTML =
+    `<div class="info-box"><b>${emp.name}</b><br>แผนก: ${emp.dept} | ฝ่าย: ${emp.div}<br>ตำแหน่ง: ${emp.pos}</div>`;
   document.getElementById("empInfo").classList.remove("hidden");
-
-  setTimeout(() => goStep(2), 600);
+  setTimeout(() => goStep(2), 500);
 }
 
-// ── STEP NAV ─────────────────────────────────────────────────
-function goStep(n) {
-  [1, 2, 3].forEach(i => {
-    document.getElementById(`step${i}`).classList.toggle("hidden", i !== n);
-    document.getElementById(`dot${i}`)?.classList.toggle("active", i <= n);
+// ── Photo ────────────────────────────────────────────────────
+function addPhotos(input, stage) {
+  const grid = document.getElementById(stage + "Grid");
+  Array.from(input.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const base64 = e.target.result.split(",")[1];
+      const idx    = photos[stage].length;
+      photos[stage].push({ base64, name: file.name });
+
+      const thumb = document.createElement("div");
+      thumb.className = "photo-thumb";
+      thumb.id = `thumb-${stage}-${idx}`;
+      thumb.innerHTML = `<img src="${e.target.result}"/>
+        <button class="photo-del" onclick="removePhoto('${stage}',${idx})">✕</button>`;
+      grid.appendChild(thumb);
+    };
+    reader.readAsDataURL(file);
   });
+  input.value = "";
 }
 
-// ── TOGGLE หยุดเครื่อง ────────────────────────────────────────
-function setMachineStop(val) {
-  state.machineStop = val;
-  document.getElementById("btnStop").className = "toggle-btn" + (val ? " active-yes" : "");
-  document.getElementById("btnRun").className  = "toggle-btn" + (!val ? " active-no"  : "");
+function removePhoto(stage, idx) {
+  photos[stage][idx] = null;
+  const el = document.getElementById(`thumb-${stage}-${idx}`);
+  if (el) el.remove();
 }
 
-// ── SUBMIT ใบแจ้งซ่อม ─────────────────────────────────────────
+async function uploadPhotos(stage, repNo) {
+  const prog  = document.getElementById(stage + "Progress");
+  const valid = photos[stage].filter(Boolean);
+  if (!valid.length) return [];
+  prog.textContent = `กำลัง upload 0/${valid.length} รูป...`;
+  const urls = [];
+  for (let i = 0; i < valid.length; i++) {
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action:    "uploadImage",
+        repNo,
+        stage,
+        base64:    valid[i].base64,
+        filename:  `${repNo}_${stage}_${Date.now()}_${i}.jpg`,
+      }),
+    });
+    const d = await res.json();
+    if (d.url) urls.push(d.url);
+    prog.textContent = `กำลัง upload ${i+1}/${valid.length} รูป...`;
+  }
+  prog.textContent = `✅ upload ${urls.length} รูปเรียบร้อย`;
+  return urls;
+}
+
+// ── Submit ───────────────────────────────────────────────────
 async function submitRepair() {
   const machSel = document.getElementById("machineSelect");
   const jobType = document.getElementById("jobType").value;
   const detail  = document.getElementById("detail").value.trim();
-
-  if (!machSel.value)     return alert("กรุณาเลือกเครื่อง");
-  if (!jobType)           return alert("กรุณาเลือกประเภทงาน");
-  if (!detail)            return alert("กรุณากรอกรายละเอียด");
-  if (state.machineStop === null) return alert("กรุณาระบุสถานะเครื่อง");
-
-  const payload = {
-    action:         "submitRepair",
-    empCode:        state.emp.code,
-    empName:        state.emp.name,
-    dept:           state.emp.dept,
-    div:            state.emp.div,
-    machineId:      machSel.value,
-    machineName:    machSel.options[machSel.selectedIndex].text,
-    jobType,
-    detail,
-    machineStop:    state.machineStop,
-    requesterLineId: state.userId,
-  };
+  if (!machSel.value)          return alert("กรุณาเลือกเครื่อง");
+  if (!jobType)                return alert("กรุณาเลือกประเภทงาน");
+  if (!detail)                 return alert("กรุณากรอกรายละเอียด");
+  if (state.machineStop===null) return alert("กรุณาระบุสถานะเครื่อง");
 
   showLoading(true);
-  const res  = await fetch(GAS_URL, { method: "POST", body: JSON.stringify(payload) });
+  // สร้างใบแจ้งก่อนเพื่อได้ repNo
+  const payload = {
+    action:"submitRepair", empCode:state.emp.code, empName:state.emp.name,
+    dept:state.emp.dept, div:state.emp.div,
+    machineId:machSel.value, machineName:machSel.options[machSel.selectedIndex].text,
+    jobType, detail, machineStop:state.machineStop, requesterLineId:state.userId,
+  };
+  const res  = await fetch(GAS_URL, { method:"POST", body:JSON.stringify(payload) });
   const data = await res.json();
-  showLoading(false);
 
-  if (data.error) { alert("เกิดข้อผิดพลาด: " + data.error); return; }
+  if (data.error) { showLoading(false); alert("เกิดข้อผิดพลาด: "+data.error); return; }
+
+  // upload รูป
+  await uploadPhotos("repair", data.repNo);
+  showLoading(false);
   document.getElementById("repNoDisplay").textContent = data.repNo;
   goStep(3);
 }
 
-// ── หน้าตรวจรับ ───────────────────────────────────────────────
+function setMachineStop(v) {
+  state.machineStop = v;
+  document.getElementById("btnStop").className = "toggle-btn"+(v?" active-yes":"");
+  document.getElementById("btnRun").className  = "toggle-btn"+(!v?" active-no":"");
+}
+
+function goStep(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById(`step${i}`).classList.toggle("hidden", i!==n);
+    document.getElementById(`dot${i}`)?.classList.toggle("active", i<=n);
+  });
+}
+
+// ── Inspect ──────────────────────────────────────────────────
 async function showInspectPage() {
   document.getElementById("page-repair").classList.add("hidden");
   document.getElementById("page-inspect").classList.remove("hidden");
-
   const res  = await fetch(`${GAS_URL}?action=getRepair&repNo=${state.repNo}`);
   const data = await res.json();
-
-  document.getElementById("inspectDetail").innerHTML = `
-    <b>${state.repNo}</b><br>
-    ช่าง: ${data[14]} ${data[15]}<br>
-    สรุปการซ่อม: ${data[18]}<br>
-    อะไหล่ที่ใช้: ${formatParts(data[19])}
-  `;
-}
-
-function formatParts(json) {
-  try {
-    const parts = JSON.parse(json);
-    return parts.map(p => `${p.name} x${p.qty} ${p.unit}`).join(", ") || "-";
-  } catch { return json || "-"; }
+  document.getElementById("inspectDetail").innerHTML =
+    `<b>${state.repNo}</b><br>ช่าง: ${data[14]} ${data[15]}<br>สรุปการซ่อม: ${data[18]}`;
 }
 
 async function submitInspect(pass) {
   const note = document.getElementById("inspectNote").value.trim();
   showLoading(true);
-  const res = await fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify({ action: "inspect", repNo: state.repNo, pass, note }),
+  const urls = await uploadPhotos("inspect", state.repNo);
+  const res  = await fetch(GAS_URL, {
+    method:"POST",
+    body:JSON.stringify({ action:"inspect", repNo:state.repNo, pass, note }),
   });
   const data = await res.json();
   showLoading(false);
-
   if (data.success) {
-    alert(pass ? "✅ บันทึกตรวจรับเรียบร้อย!" : "❌ บันทึก 'ไม่ผ่าน' เรียบร้อย กรุณาติดต่อหัวหน้าช่าง");
+    alert(pass ? "✅ บันทึกตรวจรับเรียบร้อย!" : "❌ บันทึก 'ไม่ผ่าน' เรียบร้อย");
     liff.closeWindow();
   }
 }
 
-// ── UTIL ─────────────────────────────────────────────────────
-function showLoading(v) {
-  document.getElementById("loading").classList.toggle("hidden", !v);
-}
+function showLoading(v) { document.getElementById("loading").classList.toggle("hidden",!v); }
 </script>
 </body>
 </html>
