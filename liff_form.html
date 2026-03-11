@@ -42,6 +42,16 @@ input:focus,select:focus,textarea:focus{border-color:#00b900;outline:none;backgr
 .spinner{width:44px;height:44px;border:5px solid #eee;border-top-color:#00b900;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .hidden{display:none!important}
+/* Status page */
+.status-item{border:1px solid #e0e0e0;border-radius:10px;padding:12px;margin-bottom:10px;background:#fafafa}
+.status-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:bold}
+.badge-wait{background:#FFF9C4;color:#F57F17}
+.badge-approve{background:#E3F2FD;color:#1565C0}
+.badge-working{background:#E8F5E9;color:#2E7D32}
+.badge-check{background:#FFF3E0;color:#E65100}
+.badge-done{background:#DCEDC8;color:#33691E}
+.badge-reject{background:#FFEBEE;color:#C62828}
+.badge-default{background:#F5F5F5;color:#616161}
 </style>
 </head>
 <body>
@@ -128,6 +138,14 @@ input:focus,select:focus,textarea:focus{border-color:#00b900;outline:none;backgr
     </div>
   </div>
 
+  <!-- หน้าดูสถานะ -->
+  <div id="page-status" class="hidden">
+    <div class="card">
+      <h2>📋 สถานะใบแจ้งซ่อมของฉัน</h2>
+      <div id="statusList"><p style="text-align:center;color:#999;padding:20px">กำลังโหลด...</p></div>
+    </div>
+  </div>
+
   <!-- หน้าตรวจรับ -->
   <div id="page-inspect" class="hidden">
     <div class="card">
@@ -170,10 +188,15 @@ window.addEventListener("load", async () => {
   await liff.init({ liffId: LIFF_ID });
   const p = new URLSearchParams(location.search);
   state.userId = liff.getContext()?.userId || p.get("userId") || "";
-  await loadMachines();
-  if (p.get("action") === "inspect") {
+  const action = p.get("action");
+  if (action === "status") {
+    await loadStatusPage();
+  } else if (action === "inspect") {
     state.repNo = p.get("repNo");
+    await loadMachines();
     showInspectPage();
+  } else {
+    await loadMachines();
   }
   document.getElementById("loading").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
@@ -327,6 +350,49 @@ async function submitInspect(pass) {
 }
 
 function showLoading(v) { document.getElementById("loading").classList.toggle("hidden",!v); }
+
+// ── Status Page ───────────────────────────────────────────────
+async function loadStatusPage() {
+  document.getElementById("page-repair").classList.add("hidden");
+  document.getElementById("page-status").classList.remove("hidden");
+
+  const res  = await fetch(`${GAS_URL}?action=getMyRepairs&userId=${encodeURIComponent(state.userId)}`);
+  const list = await res.json();
+  const container = document.getElementById("statusList");
+
+  if (!Array.isArray(list) || !list.length) {
+    container.innerHTML = '<p style="text-align:center;color:#999;padding:20px">ยังไม่มีใบแจ้งซ่อมครับ</p>';
+    return;
+  }
+
+  const statusMap = {
+    "รอการอนุมัติ": ["badge-wait",    "⏳ รอการอนุมัติ"],
+    "อนุมัติ":      ["badge-approve", "✅ อนุมัติแล้ว"],
+    "กำลังซ่อม":   ["badge-working", "🔧 กำลังซ่อม"],
+    "รอตรวจรับ":   ["badge-check",   "🔍 รอตรวจรับ"],
+    "ปิดงาน":      ["badge-done",    "🎉 ปิดงานแล้ว"],
+    "ไม่อนุมัติ":  ["badge-reject",  "❌ ไม่อนุมัติ"],
+    "ส่งซ่อมใหม่": ["badge-wait",    "🔄 ส่งซ่อมใหม่"],
+  };
+
+  container.innerHTML = list.map(r => {
+    const [cls, label] = statusMap[r.status] || ["badge-default", r.status];
+    return `
+      <div class="status-item">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-weight:bold;font-size:.95rem">${r.repNo}</div>
+            <div style="font-size:.8rem;color:#999;margin-top:2px">${r.createdAt}</div>
+          </div>
+          <span class="status-badge ${cls}">${label}</span>
+        </div>
+        <div style="margin-top:8px;font-size:.88rem;color:#555">
+          ⚙️ ${r.machineName} &nbsp;—&nbsp; ${r.jobType}
+          ${r.techName ? `<div style="color:#1565C0;margin-top:3px">👷 ช่าง: ${r.techName}</div>` : ""}
+        </div>
+      </div>`;
+  }).join("");
+}
 </script>
 </body>
 </html>
