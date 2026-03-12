@@ -178,16 +178,17 @@ input:focus,select:focus,textarea:focus{border-color:#00b900;outline:none;backgr
 </div>
 
 <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbyeyapHDZovPAs2n6SNcbgXN-PaZlMjPvObk09nUjv0ZjJZD0mnXqqBwXntZFMLAROcLw/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyHPfz5yx9VLN6yHp6YjgNsDlNhOStyS-lBIB2AY-YVWRa1f8ucsaimbMZlqUI9o0qL8w/exec";
 const LIFF_ID = "2009412029-oo37Q1jc";
 
-let state = { emp:null, machineStop:null, userId:"", repNo:"" };
+let state = { emp:null, machineStop:null, userId:"", repNo:"", chatTarget:"" };
 let photos = { repair:[], inspect:[] }; // เก็บ base64
 
 window.addEventListener("load", async () => {
   await liff.init({ liffId: LIFF_ID });
   const p = new URLSearchParams(location.search);
-  state.userId = liff.getContext()?.userId || p.get("userId") || "";
+  state.userId     = liff.getContext()?.userId || p.get("userId") || "";
+  state.chatTarget = p.get("chatTarget") || state.userId;  // groupId หรือ userId
   const action = p.get("action");
   if (action === "status") {
     await loadStatusPage();
@@ -296,7 +297,9 @@ async function submitRepair() {
     action:"submitRepair", empCode:state.emp.code, empName:state.emp.name,
     dept:state.emp.dept, div:state.emp.div,
     machineId:machSel.value, machineName:machSel.options[machSel.selectedIndex].text,
-    jobType, detail, machineStop:state.machineStop, requesterLineId:state.userId,
+    jobType, detail, machineStop:state.machineStop,
+    requesterLineId:state.userId,
+    chatTarget:state.chatTarget,  // groupId (แจ้งจากกลุ่ม) หรือ userId (แจ้ง 1:1)
   };
   const res  = await fetch(GAS_URL, { method:"POST", body:JSON.stringify(payload) });
   const data = await res.json();
