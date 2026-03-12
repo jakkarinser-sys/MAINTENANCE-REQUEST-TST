@@ -191,7 +191,7 @@ input:focus,select:focus,textarea:focus{border-color:#00b900;outline:none;backgr
 </div>
 
 <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbyQuqcetRRg3i4rD9seXvZWj6qS8-oeRAfhRbHikH9DrjMhFpxvu0pLkQHPGSSLvNM-wA/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxyClSyJgcXe2PzhIirR0lIz4cTEn7WkGt-YkZgEjQqgg2Isoq5xRhGj9NAMAHgSlgIwQ/exec";
 const LIFF_ID = "2009412029-oo37Q1jc";
 
 let state = { emp:null, machineStop:null, userId:"", repNo:"", chatTarget:"" };
@@ -231,7 +231,14 @@ async function loadMachines() {
     const hits = machineList.filter(m =>
       m.name.toLowerCase().includes(norm) || String(m.id).toLowerCase().includes(norm)
     ).slice(0, 12);
-    if (!hits.length) { dropdown.classList.add("hidden"); return; }
+    if (!hits.length) {
+      dropdown.innerHTML = `<div class="machine-item" style="color:#00b900;font-weight:bold" data-add="${q}">➕ เพิ่ม "${q}" เป็นเครื่องใหม่</div>`;
+      dropdown.classList.remove("hidden");
+      const addBtn = dropdown.querySelector("[data-add]");
+      addBtn.addEventListener("mousedown", e => { e.preventDefault(); addNewMachine(q); });
+      addBtn.addEventListener("touchend",  e => { e.preventDefault(); addNewMachine(q); });
+      return;
+    }
     dropdown.innerHTML = hits.map(m => {
       const idx = m.name.toLowerCase().indexOf(norm);
       const hl  = idx >= 0
@@ -251,6 +258,28 @@ async function loadMachines() {
     input.value     = name;
     input.classList.add("machine-selected");
     dropdown.classList.add("hidden");
+  }
+
+  async function addNewMachine(name) {
+    dropdown.classList.add("hidden");
+    showLoading(true);
+    try {
+      const res  = await fetch(GAS_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "addMachine", name }),
+      });
+      const data = await res.json();
+      if (data.error) { alert("เกิดข้อผิดพลาด: " + data.error); return; }
+      if (!data.existed) {
+        machineList.push({ id: data.id, name: data.name });
+        alert(`✅ เพิ่มเครื่อง "${data.name}" (${data.id}) ลงทะเบียนเรียบร้อยครับ`);
+      }
+      pickMachine(data.id, data.name);
+    } catch (err) {
+      alert("เกิดข้อผิดพลาด: " + err.message);
+    } finally {
+      showLoading(false);
+    }
   }
 
   input.addEventListener("input", () => {
